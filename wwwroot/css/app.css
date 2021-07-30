@@ -30,6 +30,16 @@ a, .btn-link {
     color: red;
 }
 
+.load {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.date, .time-table {
+    color: white;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
