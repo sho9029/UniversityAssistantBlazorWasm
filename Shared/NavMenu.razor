@@ -34,8 +34,7 @@
 
 <br>
 <div class="@NavMenuCssClass nav-item px-3 flex-column">
-    <h3 class="date">@NowTime.ToString("hh:mm:ss")</h3>
-    <p class="date">&nbsp;@NowTime.ToString("yyyy/mm/dd (ddd)")</p>
+    <Clock />    
     <TimeTable />
 </div>
 
@@ -43,23 +42,7 @@
 @code {
     private bool collapseNavMenu = true;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private DateTime NowTime;
-    private Timer tickTimer;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        tickTimer = new(500);
-        tickTimer.Elapsed += Update;
-        tickTimer.Start();
-        Update();
-    }
-
-    private void Update(object sender = null, ElapsedEventArgs e = null)
-    {
-        NowTime = DateTime.Now;
-        InvokeAsync(new Action(() => StateHasChanged()));
-    }
+    
 
     private void ToggleNavMenu()
     {

@@ -1,0 +1,23 @@
+﻿<h3 class="date">@NowTime.ToString("HH:mm:ss")</h3>
+<p class="date">&nbsp;@NowTime.ToString("yyyy/MM/dd (ddd)")</p>
+
+@using System.Timers
+@code {
+	private DateTime NowTime;
+    private Timer tickTimer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        tickTimer = new(500);
+        tickTimer.Elapsed += Update;
+        tickTimer.Start();
+        Update();
+    }
+
+    private void Update(object sender = null, ElapsedEventArgs e = null)
+    {
+        NowTime = DateTime.Now;
+        InvokeAsync(new Action(() => StateHasChanged()));
+    }
+}
