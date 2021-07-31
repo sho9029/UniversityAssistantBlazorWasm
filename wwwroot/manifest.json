@@ -1,6 +1,6 @@
 {
-  "name": "UniversityAssistantBlazorWasm",
-  "short_name": "UniversityAssistantBlazorWasm",
+  "name": "UniversityAssistant",
+  "short_name": "univasst",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
