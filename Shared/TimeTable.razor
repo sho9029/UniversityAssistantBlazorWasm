@@ -25,7 +25,6 @@
 
 @code {
 
-#if DEBUG
     private List<string> Subjects = new(5)
     {
 	    "subject1", "subject2", "subject3", "subject4", "subject5"
@@ -47,13 +46,13 @@
         new DateTime(1, 1, 1, 16, 40, 0),
         new DateTime(1, 1, 1, 18, 20, 0)
     };
-#else
+    /*
     // initialization required
 
     private List<string> Subjects = new(5);
     private List<DateTime> StartTimes = new(5);
     private List<DateTime> EndTimes = new(5);
-#endif
+    */
 
     protected override void OnInitialized()
     {
