@@ -24,8 +24,10 @@
 
 <br>
 <div class="@NavMenuCssClass nav-item px-3 flex-column">
-    <Clock />    
-    <TimeTable />
+    <Clock />
+    <AuthorizeView>
+        <TimeTable />
+    </AuthorizeView>
 </div>
 
 @using System.Timers
