@@ -1,3 +1,5 @@
+@inject IJSRuntime JSRuntime
+
 <CascadingAuthenticationState>
 	<Theme>
 		<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
@@ -13,3 +15,19 @@
         <LayerHost />
 	</Theme>
 </CascadingAuthenticationState>
+
+@using BlazorFluentUI.Themes.Default
+@code {
+    [Inject]
+    public ThemeProvider ThemeProvider { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./color-scheme.js");
+        if (await module.InvokeAsync<bool>("isDarkMode"))
+        {
+            ThemeProvider.UpdateTheme(new DefaultPaletteDark());
+        }
+        await base.OnInitializedAsync();
+    }
+}
