@@ -16,8 +16,8 @@
 
 <body>
     <div id="app">
-        <div class="load">
-            <div class="loader" />
+        <div id="load">
+            <div id="loader" />
         </div>
     </div>
 
@@ -29,6 +29,16 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
     <script src="color-scheme.js"></script>
+    <script>
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark');
+            document.getElementById('load').classList.add('dark');
+            document.getElementById('loader').classList.add('dark2')
+        }
+        else {
+            document.getElementById('loader').classList.add('light');
+        }
+    </script>
 </body>
 
 </html>

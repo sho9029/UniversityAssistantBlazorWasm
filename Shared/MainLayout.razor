@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JSRuntime
 
 <div class="page">
     <div class="sidebar">
@@ -12,19 +11,3 @@
         </div>
     </div>
 </div>
-
-@using BlazorFluentUI.Themes.Default
-@code {
-    [Inject]
-    public ThemeProvider ThemeProvider { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./color-scheme.js");
-        if (await module.InvokeAsync<bool>("isDarkMode"))
-        {
-            ThemeProvider.UpdateTheme(new DefaultPaletteDark());
-        }
-    }
-}
