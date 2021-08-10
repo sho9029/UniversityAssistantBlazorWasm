@@ -1,10 +1,15 @@
 @inject IJSRuntime JSRuntime
+@inject ThemeProvider ThemeProvider
 
 <CascadingAuthenticationState>
 	<Theme>
 		<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
             <Found Context="routeData">
-                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <RedirectToSignIn />
+					</NotAuthorized>
+				</AuthorizeRouteView>
             </Found>
             <NotFound>
                 <LayoutView Layout="@typeof(MainLayout)">
@@ -18,8 +23,6 @@
 
 @using BlazorFluentUI.Themes.Default
 @code {
-    [Inject]
-    public ThemeProvider ThemeProvider { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
