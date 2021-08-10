@@ -1,0 +1,78 @@
+﻿@page "/signin"
+@inject IAuthService Auth
+@inject NavigationManager NavigationManager
+
+<h3>Sign in</h3>
+<TextField class="text-field" Label="Email" @bind-Value=@Email AutoComplete="AutoComplete.Email" OnKeyDown=@((e) => OnKeyDownAsync(e)) />
+<TextField class="text-field" Label="Password" @bind-Value=@Password InputType="InputType.Password" OnKeyDown=@((e) => OnKeyDownAsync(e)) />
+<br />
+<DefaultButton Text="Sign in" OnClick=@(() => SubmitAsync()) Disabled="@Disabled" />
+<p>or <Link Href="signup">sign up</Link></p>
+@if (!String.IsNullOrEmpty(Error[0]))
+{
+    <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(0))>
+        @Error[0]
+	</MessageBar>
+}
+@if (!String.IsNullOrEmpty(Error[1]))
+{
+    <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(1))>
+        @Error[1]
+	</MessageBar>
+}
+@if (!String.IsNullOrEmpty(Error[2]))
+{
+    <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(2))>
+        @Error[2]
+	</MessageBar>
+}
+
+@using System.Text.RegularExpressions
+@code {
+    private string Email;
+    private string Password;
+
+    private bool _disabled;
+    private bool Disabled
+    {
+        get
+        {
+            return String.IsNullOrEmpty(Email) || String.IsNullOrEmpty(Password) ? true : _disabled;
+        }
+        set
+        {
+            _disabled = value;
+        }
+    }
+
+    private List<string> Error = new(3) { String.Empty, String.Empty, String.Empty };
+
+    private async Task OnKeyDownAsync(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter" || e.Code == "NumpadEnter") && !Disabled)
+        {
+            await SubmitAsync();
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        Error = new(3) { String.Empty, String.Empty, String.Empty };
+        Disabled = true;
+        var result = await Auth.SignInAsync(new SignInModel() { Email = Email, Password = Password });
+        if (result.IsSuccessful)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Error[2] = $"Firebase 認証エラー: {result.ErrorReason}";
+        }
+        Disabled = false;
+    }
+
+    private void OnDismiss(int index)
+    {
+        Error[index] = String.Empty;
+    }
+}

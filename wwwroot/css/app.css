@@ -34,6 +34,15 @@ a, .btn-link {
     color: white;
 }
 
+.user {
+    color: white;
+    padding-left: 0.5rem;
+}
+
+.text-field {
+    padding-top: 0.8rem;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
