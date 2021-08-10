@@ -39,7 +39,7 @@ namespace UniversityAssistantBlazorWasm.Tools
                     IsSuccessful = true,
                     IDToken = firebaseResult.FirebaseToken
                 };
-                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, signInModel.Password);
+                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
             }
             catch (FirebaseAuthException ex)
@@ -63,7 +63,7 @@ namespace UniversityAssistantBlazorWasm.Tools
                     IsSuccessful = true,
                     IDToken = firebaseResult.FirebaseToken
                 };
-                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, signInModel.Password);
+                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
             }
             catch (FirebaseAuthException ex)
