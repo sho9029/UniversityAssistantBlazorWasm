@@ -7,6 +7,35 @@
 
 <!-- spanタグ内のclassアイコン参照: https://iconify.design/icon-sets/oi/ -->
 
+<div class="@NavMenuCssClass">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <AuthorizeView>
+                <Authorized>
+                    <p class="user">@context.User.Identity.Name</p>
+	    	    </Authorized>
+                <NotAuthorized>
+                    <p class="user">Guest user</p>
+	    	    </NotAuthorized>
+	        </AuthorizeView>
+		</li>
+        <li class="nav-item px-3">
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-item nav-link" href="signout" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Sign out
+					</NavLink>
+				</Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-item nav-link" href="signin" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Sign in
+	    	        </NavLink>
+				</NotAuthorized>
+			</AuthorizeView>
+		</li>
+	</ul>
+</div>
+
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
@@ -26,8 +55,10 @@
 <div class="@NavMenuCssClass nav-item px-3 flex-column">
     <Clock />
     <AuthorizeView>
-        <TimeTable />
-    </AuthorizeView>
+        <Authorized>
+            <TimeTable />
+		</Authorized>
+	</AuthorizeView>
 </div>
 
 @using System.Timers
