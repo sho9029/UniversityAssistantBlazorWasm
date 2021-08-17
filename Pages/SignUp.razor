@@ -29,33 +29,33 @@
 
 @using System.Text.RegularExpressions
 @code {
-    private bool IsAvailableEmail = false;
+    private bool isAvailableEmail = false;
     private string _email;
     private string Email
     {
         get
         {
-            return _email ?? null;
+            return _email;
         }
         set
         {
             _email = value;
-            IsAvailableEmail = IsEmail(value);
+            isAvailableEmail = IsEmail(value);
         }
     }
 
-    private bool IsAvailablePassword = false;
+    private bool isAvailablePassword = false;
     private string _password;
     private string Password
     {
         get
         {
-            return _password ?? null;
+            return _password;
         }
         set
         {
             _password = value;
-            IsAvailablePassword = IsPassword(value);
+            isAvailablePassword = IsPassword(value);
         }
     }
 
@@ -97,13 +97,13 @@
     private async Task SubmitAsync()
     {
         Error = new(3) { String.Empty, String.Empty, String.Empty };
-        if (!IsAvailableEmail || !IsAvailablePassword)
+        if (!isAvailableEmail || !isAvailablePassword)
         {
-            if (!IsAvailableEmail)
+            if (!isAvailableEmail)
             {
                 Error[0] = "使用できないメールアドレスです。";
             }
-            if (!IsAvailablePassword)
+            if (!isAvailablePassword)
             {
                 Error[1] = "パスワードは8~128文字で、半角英小文字, 大文字, 数字をそれぞれ1文字以上含む文字列にしてください。";
             }
