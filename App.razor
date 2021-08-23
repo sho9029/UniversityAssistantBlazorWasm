@@ -25,10 +25,20 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./color-scheme.js");
-        if (await module.InvokeAsync<bool>("isDarkMode"))
+        if (await JSRuntime.InvokeAsync<bool>("isDarkMode"))
         {
             ThemeProvider.UpdateTheme(new DefaultPaletteDark());
+        }
+
+        var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("requestSubscription");
+        if (subscription != null)
+        {
+            // TODO: Firebase データベースにデータを保存
+
+            // BETA: ローカルストレージに保存
+            await LocalStorage.SetItemAsync("url", subscription.Url);
+            await LocalStorage.SetItemAsync("p256dh", subscription.P256dh);
+            await LocalStorage.SetItemAsync("auth", subscription.Auth);
         }
         await base.OnInitializedAsync();
     }
