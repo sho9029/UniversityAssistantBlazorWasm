@@ -29,6 +29,10 @@ namespace UniversityAssistantBlazorWasm.Models
                     return String.Empty;
                 }
                 var message = Error.Message;
+                if (message[(message.IndexOf("Response: ") + 10)..].StartsWith("N/A"))
+                {
+                    return "Unable to connect to Firebase authentication server.";
+                }
                 return message[(message.IndexOf("Reason: ") + 7)..];
             }
         }
