@@ -1,5 +1,6 @@
 @inject IJSRuntime JSRuntime
 @inject ThemeProvider ThemeProvider
+@inject ILocalStorageService LocalStorage
 
 <CascadingAuthenticationState>
 	<Theme>
@@ -21,9 +22,7 @@
 	</Theme>
 </CascadingAuthenticationState>
 
-@using BlazorFluentUI.Themes.Default
 @code {
-
     protected override async Task OnInitializedAsync()
     {
         var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./color-scheme.js");
