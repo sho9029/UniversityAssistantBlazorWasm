@@ -1,4 +1,5 @@
 ﻿using Firebase.Auth;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Threading.Tasks;
 using UniversityAssistantBlazorWasm.Models;
@@ -13,7 +14,8 @@ using UniversityAssistantBlazorWasm.Properties;
  *     public static readonly Dictionary<string, string> Firebase = new()
  *     {
  *         { "ApiKey", "Firebase api key" },
- *         { "DatabaseURL", "Database URL" }
+ *         { "DatabaseURL", "Database URL" },
+ *         { "PublicKey", "Public key" }
  *     };
  * }
  */
@@ -22,10 +24,11 @@ namespace UniversityAssistantBlazorWasm.Tools
 {
     public class FirebaseAuthService : IAuthService
     {
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        [Inject]
+        private AuthenticationStateProvider authenticationStateProvider { get; }
         public FirebaseAuthService(AuthenticationStateProvider authenticationStateProvider)
         {
-            _authenticationStateProvider = authenticationStateProvider;
+            this.authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<SignInResult> SignInAsync(SignInModel signInModel)
@@ -39,7 +42,7 @@ namespace UniversityAssistantBlazorWasm.Tools
                     IsSuccessful = true,
                     IDToken = firebaseResult.FirebaseToken
                 };
-                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
+                await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
             }
             catch (FirebaseAuthException ex)
@@ -63,7 +66,7 @@ namespace UniversityAssistantBlazorWasm.Tools
                     IsSuccessful = true,
                     IDToken = firebaseResult.FirebaseToken
                 };
-                await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
+                await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
             }
             catch (FirebaseAuthException ex)
@@ -78,7 +81,7 @@ namespace UniversityAssistantBlazorWasm.Tools
 
         public async Task SignOutAsync()
         {
-            await ((AuthenticationProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+            await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsLoggedOut();
         }
     }
 }
