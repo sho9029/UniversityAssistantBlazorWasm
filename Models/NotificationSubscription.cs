@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace UniversityAssistantBlazorWasm.Models
+﻿namespace UniversityAssistantBlazorWasm.Models
 {
     public class NotificationSubscription
     {

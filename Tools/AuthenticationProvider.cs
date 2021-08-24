@@ -21,7 +21,7 @@ namespace UniversityAssistantBlazorWasm.Tools
             this.localStorage = localStorage;
         }
 
-        public async override Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             // ローカルストレージからトークンを取得
             var savedTaken = await localStorage.GetItemAsync<string>("authToken");
