@@ -5,21 +5,6 @@ using System.Threading.Tasks;
 using UniversityAssistantBlazorWasm.Models;
 using UniversityAssistantBlazorWasm.Properties;
 
-
-/*
- * Confidential.cs in "Properties" namespace
- * 
- * public static class Confidential
- * {
- *     public static readonly Dictionary<string, string> Firebase = new()
- *     {
- *         { "ApiKey", "Firebase api key" },
- *         { "DatabaseURL", "Database URL" },
- *         { "PublicKey", "Public key" }
- *     };
- * }
- */
-
 namespace UniversityAssistantBlazorWasm.Tools
 {
     public class FirebaseAuthService : IAuthService
@@ -35,7 +20,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase["ApiKey"]));
+                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 var firebaseResult = await provider.SignInWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
@@ -59,7 +44,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase["ApiKey"]));
+                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 var firebaseResult = await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
