@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using BlazorFluentUI;
+using Append.Blazor.Notifications;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,7 @@ namespace UniversityAssistantBlazorWasm
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazorFluentUI();
             builder.Services.AddAuthorizationCore();
+            builder.Services.AddNotifications();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationProvider>();
             builder.Services.AddScoped<IAuthService, FirebaseAuthService>();
             await builder.Build().RunAsync();

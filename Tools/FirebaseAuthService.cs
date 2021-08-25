@@ -35,7 +35,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase["ApiKey"]));
+                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 var firebaseResult = await provider.SignInWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
@@ -59,7 +59,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase["ApiKey"]));
+                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 var firebaseResult = await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
