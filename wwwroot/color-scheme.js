@@ -1,3 +1,3 @@
-export function isDarkMode() {
+function isDarkMode() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
