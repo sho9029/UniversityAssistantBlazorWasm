@@ -1,20 +1,33 @@
-﻿@page "/"
-@inject IJSRuntime JSRuntime
-@inject ILocalStorageService LocalStorage
+@page "/"
+@inject INotificationService NotificationService
 
 <h1>Hello, world!</h1>
-<PrimaryButton Text="Send notification" OnClick=@(() => SendNotificationAsync()) />
+<DefaultButton Text="Request permission" OnClick=@(() => RequestPermissionAsync()) />
+<PrimaryButton Text="Send notification" OnClick=@(() => SendNotification()) />
 
 @code {
-	private async Task SendNotificationAsync()
-	{
-		var endpoint = await LocalStorage.GetItemAsync<string>("endpoint");
-		var p256dh = await LocalStorage.GetItemAsync<string>("p256dh");
-		var auth = await LocalStorage.GetItemAsync<string>("auth");
-		var subscription = new PushSubscription(endpoint, p256dh, auth);
+	private bool isSupportedNotification { get; set; }
+	PermissionType permission { get; set; }
 
-		var payload = new NotificationPayload("Send notification", "/");
-		await NotificationController.SendNotificationAsync(subscription, payload);
+	protected override async Task OnInitializedAsync()
+	{
+		isSupportedNotification = await NotificationService.IsSupportedByBrowserAsync();
+		permission = await NotificationService.RequestPermissionAsync();
 	}
 
+	private async Task RequestPermissionAsync()
+	{
+		permission = await NotificationService.RequestPermissionAsync();
+	}
+
+	private async Task SendNotification(string title = "UniversityAssistant", string body = "", string icon = "")
+	{
+		var options = new NotificationOptions
+		{
+			Body = body,
+			Icon = icon
+		};
+
+		await NotificationService.CreateAsync(title, options);
+	}
 }
