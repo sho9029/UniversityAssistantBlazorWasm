@@ -36,7 +36,7 @@
             // TODO: Firebase データベースにデータを保存
 
             // BETA: ローカルストレージに保存
-            await LocalStorage.SetItemAsync("url", subscription.Url);
+            await LocalStorage.SetItemAsync("endpoint", subscription.Url);
             await LocalStorage.SetItemAsync("p256dh", subscription.P256dh);
             await LocalStorage.SetItemAsync("auth", subscription.Auth);
         }
