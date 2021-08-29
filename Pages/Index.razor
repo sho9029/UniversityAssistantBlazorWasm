@@ -3,31 +3,26 @@
 
 <h1>Hello, world!</h1>
 <DefaultButton Text="Request permission" OnClick=@(() => RequestPermissionAsync()) />
-<PrimaryButton Text="Send notification" OnClick=@(() => SendNotification()) />
+<PrimaryButton Text="Send notification" OnClick=@(() => SendNotificationAsync()) Disabled="NotificationService.PermissionStatus != PermissionType.Granted"/>
 
 @code {
-	private bool isSupportedNotification { get; set; }
-	PermissionType permission { get; set; }
-
 	protected override async Task OnInitializedAsync()
 	{
-		isSupportedNotification = await NotificationService.IsSupportedByBrowserAsync();
-		permission = await NotificationService.RequestPermissionAsync();
+		await RequestPermissionAsync();
 	}
 
 	private async Task RequestPermissionAsync()
 	{
-		permission = await NotificationService.RequestPermissionAsync();
+		await NotificationService.RequestPermissionAsync();
 	}
 
-	private async Task SendNotification(string title = "UniversityAssistant", string body = "", string icon = "")
+	private async Task SendNotificationAsync(string title = "UniversityAssistant\\index", string body = "", string icon = "")
 	{
 		var options = new NotificationOptions
 		{
 			Body = body,
 			Icon = icon
 		};
-
 		await NotificationService.CreateAsync(title, options);
 	}
 }

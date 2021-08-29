@@ -29,17 +29,5 @@
         {
             ThemeProvider.UpdateTheme(new DefaultPaletteDark());
         }
-
-        var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("requestSubscription");
-        if (subscription != null)
-        {
-            // TODO: Firebase データベースにデータを保存
-
-            // BETA: ローカルストレージに保存
-            await LocalStorage.SetItemAsync("endpoint", subscription.Url);
-            await LocalStorage.SetItemAsync("p256dh", subscription.P256dh);
-            await LocalStorage.SetItemAsync("auth", subscription.Auth);
-        }
-        await base.OnInitializedAsync();
     }
 }
