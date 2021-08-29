@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Firebase.Auth;
+using System;
 using System.Threading.Tasks;
 
 namespace UniversityAssistantBlazorWasm.Models
 {
     public interface IAuthService
     {
-        Task<SignInResult> SignInAsync(SignInModel SignInModel);
+        FirebaseAuthLink FirebaseAuthLink { get; set; }
+        Task<SignInResult> SignInAsync(SignInModel signInModel);
+        Task<SignInResult> SignInWithTokenAsync(string token);
         Task<SignInResult> SignUpAsync(SignInModel signInModel);
         Task SignOutAsync();
+        Task<string> GetFreshTokenAsync(string token);
     }
 
     public class SignInModel

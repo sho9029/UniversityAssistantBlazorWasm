@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -60,6 +61,14 @@ namespace UniversityAssistantBlazorWasm.Tools
             }
             // 認証情報の変更通知
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+    }
+
+    public static class AuthenticationExtensions
+    {
+        public static IServiceCollection AddAuthentication(this IServiceCollection services)
+        {
+            return services.AddScoped<AuthenticationStateProvider, AuthenticationProvider>();
         }
     }
 }
