@@ -42,6 +42,12 @@ namespace UniversityAssistantBlazorWasm.Tools
             return child;
         }
 
+        /// <summary>
+        /// データベースからデータを取得
+        /// </summary>
+        /// <typeparam name="T">保存したデータの型</typeparam>
+        /// <param name="query">クエリ</param>
+        /// <returns>取得したデータ</returns>
         public async Task<T[]> GetAsync<T>(string query)
         {
             var child = GetChildQuery(query);
@@ -49,18 +55,36 @@ namespace UniversityAssistantBlazorWasm.Tools
             return result.Select(o => o.Object).ToArray();
         }
 
+        /// <summary>
+        /// データをデータベースに保存<br/>
+        /// 保存先: クエリ/ランダムな文字列/データ
+        /// </summary>
+        /// <typeparam name="T">保存するデータの型</typeparam>
+        /// <param name="query">クエリ</param>
+        /// <param name="data">保存するデータ</param>
         public async Task PostAsync<T>(string query, T data)
         {
             var child = GetChildQuery(query);
             await child.PostAsync(data);
         }
 
+        /// <summary>
+        /// データをデータベースに保存<br/>
+        /// 保存先: クエリ/データ
+        /// </summary>
+        /// <typeparam name="T">保存するデータの型</typeparam>
+        /// <param name="query">クエリ</param>
+        /// <param name="data">保存するデータ</param>
         public async Task PutAsync<T>(string query, T data)
         {
             var child = GetChildQuery(query);
             await child.PutAsync(data);
         }
 
+        /// <summary>
+        /// データベースからデータを削除
+        /// </summary>
+        /// <param name="query">クエリ</param>
         public async Task DeleteAsync(string query)
         {
             var child = GetChildQuery(query);
