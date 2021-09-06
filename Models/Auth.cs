@@ -1,5 +1,4 @@
-﻿using Firebase.Auth;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace UniversityAssistantBlazorWasm.Models
@@ -11,8 +10,6 @@ namespace UniversityAssistantBlazorWasm.Models
         Task<SignInResult> SignUpAsync(SignInModel signInModel);
         Task SignOutAsync();
         Task<string> GetFreshTokenAsync(string token);
-        Task ChangeDisplayNameAsync(string token, string displayName);
-        Task<string> GetDisplayNameAsync(string token);
     }
 
     public class SignInModel

@@ -4,8 +4,6 @@
 @inject NavigationManager NavigationManager
 
 <h1>Hello, world!</h1>
-<DefaultButton Text="Request permission" OnClick=@(() => RequestPermissionAsync()) />
-<PrimaryButton Text="Send notification" OnClick=@(() => SendNotificationAsync()) Disabled="NotificationService.PermissionStatus != PermissionType.Granted"/>
 
 @code {
 	protected override async Task OnInitializedAsync()
