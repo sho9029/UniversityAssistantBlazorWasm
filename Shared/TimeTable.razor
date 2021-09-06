@@ -1,62 +1,75 @@
-﻿<table class="table">
+﻿@inject IAuthService Auth
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+<table class="table">
     <tbody class="time-table">
-        <tr>
-            <td>1st<br>@StartTimes[0].ToString("HH:mm")~@EndTimes[0].ToString("HH:mm")</td>
-            <td>@Subjects[0]</td>
-        </tr>
-        <tr>
-            <td>2nd<br>@StartTimes[1].ToString("HH:mm")~@EndTimes[1].ToString("HH:mm")</td>
-            <td>@Subjects[1]</td>
-        </tr>
-        <tr>
-            <td>3rd<br>@StartTimes[2].ToString("HH:mm")~@EndTimes[2].ToString("HH:mm")</td>
-            <td>@Subjects[2]</td>
-        </tr>
-        <tr>
-            <td>4th<br>@StartTimes[3].ToString("HH:mm")~@EndTimes[3].ToString("HH:mm")</td>
-            <td>@Subjects[3]</td>
-        </tr>
-        <tr>
-            <td>5th<br>@StartTimes[4].ToString("HH:mm")~@EndTimes[4].ToString("HH:mm")</td>
-            <td>@Subjects[4]</td>
-        </tr>
+        @if (IsFilled)
+        {
+            <tr>
+                <td>1st<br>@Personal.StartTimes[0].ToString("HH:mm")~@Personal.EndTimes[0].ToString("HH:mm")</td>
+                <td>@Personal.Subjects[0]</td>
+            </tr>
+            <tr>
+                <td>2nd<br>@Personal.StartTimes[1].ToString("HH:mm")~@Personal.EndTimes[1].ToString("HH:mm")</td>
+                <td>@Personal.Subjects[1]</td>
+            </tr>
+            <tr>
+                <td>3rd<br>@Personal.StartTimes[2].ToString("HH:mm")~@Personal.EndTimes[2].ToString("HH:mm")</td>
+                <td>@Personal.Subjects[2]</td>
+            </tr>
+            <tr>
+                <td>4th<br>@Personal.StartTimes[3].ToString("HH:mm")~@Personal.EndTimes[3].ToString("HH:mm")</td>
+                <td>@Personal.Subjects[3]</td>
+            </tr>
+            <tr>
+                <td>5th<br>@Personal.StartTimes[4].ToString("HH:mm")~@Personal.EndTimes[4].ToString("HH:mm")</td>
+                <td>@Personal.Subjects[4]</td>
+            </tr>
+        }
+        else
+        {
+            <tr>Loading</tr>
+        }
     </tbody>
 </table>
 
 @code {
-    private List<string> Subjects = new(5)
-    {
-	    "subject1", "subject2", "subject3", "subject4", "subject5"
-    };
-    private List<DateTime> StartTimes = new(5)
-    {
-	    new DateTime(1, 1, 1, 9, 30, 0),
-        new DateTime(1, 1, 1, 11, 0, 0),
-        new DateTime(1, 1, 1, 13, 30, 0),
-        new DateTime(1, 1, 1, 15, 10, 0),
-        new DateTime(1, 1, 1, 16, 50, 0)
-    };
+    private DatabaseProvider database;
+    private bool IsFilled = false;
+    private Personal Personal;
 
-    private List<DateTime> EndTimes = new(5)
+    protected override async Task OnInitializedAsync()
     {
-        new DateTime(1, 1, 1, 11, 0, 0),
-        new DateTime(1, 1, 1, 12, 40, 0),
-        new DateTime(1, 1, 1, 15, 0, 0),
-        new DateTime(1, 1, 1, 16, 40, 0),
-        new DateTime(1, 1, 1, 18, 20, 0)
-    };
-    /*
-    // initialization required
+        database = new(Confidential.Firebase.DatabaseUrl,
+            new FirebaseOptions
+            {
+                AuthTokenAsyncFactory = async () => await LocalStorage.GetItemAsync<string>("authToken")
+            });
+        await GetPersonalDataAsync();
+    }
 
-    private List<string> Subjects = new(5);
-    private List<DateTime> StartTimes = new(5);
-    private List<DateTime> EndTimes = new(5);
-    */
-
-    protected override void OnInitialized()
+    private async Task GetPersonalDataAsync()
     {
-        base.OnInitialized();
-
-        // initialize Subjects
+        try
+        {
+            var data = (await database.GetAsync<Personal>("put"))[0];
+            Personal = new Personal
+            {
+                StartTimes = data.StartTimes,
+                EndTimes = data.EndTimes,
+                Subjects = data.Subjects
+            };
+            IsFilled = true;
+        }
+        catch (FirebaseException ex)
+        {
+            // トークンの期限切れ
+            if (ex.ResponseData.Contains("expired"))
+            {
+                await Auth.SignOutAsync();
+                NavigationManager.NavigateTo("signin/token error");
+            }
+        }
     }
 }
