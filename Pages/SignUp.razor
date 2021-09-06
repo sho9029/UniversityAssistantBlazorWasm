@@ -1,6 +1,7 @@
 ﻿@page "/signup"
 @inject IAuthService Auth
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Sign up</h3>
 <TextField class="text-field" Label="Email" @bind-Value=@Email AutoComplete="AutoComplete.Email" OnKeyDown=@((e) => OnKeyDownAsync(e))/>
@@ -74,6 +75,15 @@
     private readonly Regex emailPattern = new ("^[-+.\\w]+@[a-z0-9]+(\\.[a-z0-9]+)*\\.[a-z]{2,6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase),
         passwordPattern = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])[!-~]{8,128}$", RegexOptions.Compiled);
     private List<string> Error = new(3) { String.Empty, String.Empty, String.Empty };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 
     private bool IsEmail(string email)
     {

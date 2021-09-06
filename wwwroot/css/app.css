@@ -43,6 +43,10 @@ a, .btn-link {
     padding-top: 0.8rem;
 }
 
+.error-reason {
+    color: lightcoral;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
