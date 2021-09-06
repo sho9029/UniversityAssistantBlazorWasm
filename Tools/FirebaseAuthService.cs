@@ -10,7 +10,7 @@ namespace UniversityAssistantBlazorWasm.Tools
 {
     public class FirebaseAuthService : IAuthService
     {
-        public FirebaseAuthLink FirebaseAuthLink { get; set; }
+        private FirebaseAuthLink FirebaseAuthLink { get; set; }
         [Inject]
         private AuthenticationStateProvider authenticationStateProvider { get; }
         public FirebaseAuthService(AuthenticationStateProvider authenticationStateProvider)
@@ -99,6 +99,19 @@ namespace UniversityAssistantBlazorWasm.Tools
             var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
             FirebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
             return (await FirebaseAuthLink.GetFreshAuthAsync()).FirebaseToken;
+        }
+
+        public async Task ChangeDisplayNameAsync(string token, string displayName)
+        {
+            var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
+            FirebaseAuthLink = await provider.UpdateProfileAsync(token, displayName, "");
+        }
+
+        public async Task<string> GetDisplayNameAsync(string token)
+        {
+            var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
+            var user = await provider.GetUserAsync(token);
+            return user.DisplayName;
         }
     }
 

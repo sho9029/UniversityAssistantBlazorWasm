@@ -6,12 +6,13 @@ namespace UniversityAssistantBlazorWasm.Models
 {
     public interface IAuthService
     {
-        FirebaseAuthLink FirebaseAuthLink { get; set; }
         Task<SignInResult> SignInAsync(SignInModel signInModel);
         Task<SignInResult> SignInWithTokenAsync(string token);
         Task<SignInResult> SignUpAsync(SignInModel signInModel);
         Task SignOutAsync();
         Task<string> GetFreshTokenAsync(string token);
+        Task ChangeDisplayNameAsync(string token, string displayName);
+        Task<string> GetDisplayNameAsync(string token);
     }
 
     public class SignInModel
