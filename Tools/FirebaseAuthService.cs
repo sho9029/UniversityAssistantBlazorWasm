@@ -10,7 +10,7 @@ namespace UniversityAssistantBlazorWasm.Tools
 {
     public class FirebaseAuthService : IAuthService
     {
-        private FirebaseAuthLink FirebaseAuthLink { get; set; }
+        private FirebaseAuthLink firebaseAuthLink { get; set; }
         [Inject]
         private AuthenticationStateProvider authenticationStateProvider { get; }
         public FirebaseAuthService(AuthenticationStateProvider authenticationStateProvider)
@@ -23,11 +23,11 @@ namespace UniversityAssistantBlazorWasm.Tools
             try
             {
                 var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-                FirebaseAuthLink = await provider.SignInWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
+                firebaseAuthLink = await provider.SignInWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
                     IsSuccessful = true,
-                    IDToken = (await FirebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
+                    IDToken = (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
                 };
                 await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
@@ -47,11 +47,11 @@ namespace UniversityAssistantBlazorWasm.Tools
             try
             {
                 var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-                FirebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
+                firebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
                 var res = new SignInResult
                 {
                     IsSuccessful = true,
-                    IDToken = (await FirebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
+                    IDToken = (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
                 };
                 return res;
             }
@@ -70,11 +70,11 @@ namespace UniversityAssistantBlazorWasm.Tools
             try
             {
                 var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-                FirebaseAuthLink = await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
+                firebaseAuthLink = await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password);
                 var res = new SignInResult()
                 {
                     IsSuccessful = true,
-                    IDToken = (await FirebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
+                    IDToken = (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
                 };
                 await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
                 return res;
@@ -97,8 +97,15 @@ namespace UniversityAssistantBlazorWasm.Tools
         public async Task<string> GetFreshTokenAsync(string token)
         {
             var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-            FirebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
-            return (await FirebaseAuthLink.GetFreshAuthAsync()).FirebaseToken;
+            firebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
+            return (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken;
+        }
+
+        public async Task<string> GetUidAsync(string token)
+        {
+            var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
+            var user = await provider.GetUserAsync(token);
+            return user.LocalId;
         }
     }
 

@@ -10,6 +10,7 @@ namespace UniversityAssistantBlazorWasm.Models
         Task<SignInResult> SignUpAsync(SignInModel signInModel);
         Task SignOutAsync();
         Task<string> GetFreshTokenAsync(string token);
+        Task<string> GetUidAsync(string token);
     }
 
     public class SignInModel
