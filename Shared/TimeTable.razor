@@ -39,14 +39,19 @@
     private bool IsFilled = false;
     private Personal Personal;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
         database = new(Confidential.Firebase.DatabaseUrl,
             new FirebaseOptions
             {
                 AuthTokenAsyncFactory = async () => await LocalStorage.GetItemAsync<string>("authToken")
             });
         await GetPersonalDataAsync();
+        await InvokeAsync(new Action(() => StateHasChanged()));
     }
 
     private async Task GetPersonalDataAsync()
@@ -68,15 +73,28 @@
             // トークンの期限切れ
             if (ex.ResponseData.Contains("expired"))
             {
-                await Auth.SignOutAsync();
-                NavigationManager.NavigateTo("signin/token error");
+                await NavigateToSignInAsync("token error");
             }
+            else
+            {
+                Console.Error.WriteLine($"FirebaseException\n{ex.Message}");
+            }
+        }
+        catch (FirebaseAuthException)
+        {
+            await NavigateToSignInAsync("invalid token");
         }
         catch (IndexOutOfRangeException)
         {
             // データが保存されていない時
             await InitializeDatabaseAsync();
         }
+    }
+
+    private async Task NavigateToSignInAsync(string reason)
+    {
+        await Auth.SignOutAsync();
+        NavigationManager.NavigateTo($"/signin/{reason}");
     }
 
     private async Task InitializeDatabaseAsync()
