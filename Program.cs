@@ -1,5 +1,4 @@
 using Append.Blazor.Notifications;
-using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using BlazorFluentUI;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -20,7 +19,6 @@ namespace UniversityAssistantBlazorWasm
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddOptions();
-            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazoredSessionStorage();
             builder.Services.AddBlazorFluentUI();
             builder.Services.AddAuthorizationCore();
