@@ -1,4 +1,4 @@
-﻿using Blazored.LocalStorage;
+﻿using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,19 +14,19 @@ namespace UniversityAssistantBlazorWasm.Tools
         [Inject]
         private HttpClient httpClient { get; }
         [Inject]
-        private ILocalStorageService localStorage { get; }
+        private ISessionStorageService sessionStorage { get; }
 
-        public AuthenticationProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public AuthenticationProvider(HttpClient httpClient, ISessionStorageService sessionStorage)
         {
             this.httpClient = httpClient;
-            this.localStorage = localStorage;
+            this.sessionStorage = sessionStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             // ローカルストレージからトークンを取得
-            var savedTaken = await localStorage.GetItemAsync<string>("authToken");
-            var userID = await localStorage.GetItemAsync<string>("userID");
+            var savedTaken = await sessionStorage.GetItemAsync<string>("authToken");
+            var userID = await sessionStorage.GetItemAsync<string>("userID");
 
             // トークンが存在しない場合
             if (string.IsNullOrWhiteSpace(savedTaken))
@@ -44,8 +44,8 @@ namespace UniversityAssistantBlazorWasm.Tools
         public async Task MarkUserAsAuthenticated(string userID, string authToken)
         {
             // ローカルストレージに認証情報を保持
-            await localStorage.SetItemAsync("userID", userID);
-            await localStorage.SetItemAsync("authToken", authToken);
+            await sessionStorage.SetItemAsync("userID", userID);
+            await sessionStorage.SetItemAsync("authToken", authToken);
             // 認証情報の変更通知
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
@@ -53,8 +53,8 @@ namespace UniversityAssistantBlazorWasm.Tools
         public async Task MarkUserAsLoggedOut()
         {
             // ローカルストレージから認証情報を削除
-            await localStorage.RemoveItemAsync("userID");
-            await localStorage.RemoveItemAsync("authToken");
+            await sessionStorage.RemoveItemAsync("userID");
+            await sessionStorage.RemoveItemAsync("authToken");
             if (httpClient.DefaultRequestHeaders.Authorization != null)
             {
                 httpClient.DefaultRequestHeaders.Authorization = null;
