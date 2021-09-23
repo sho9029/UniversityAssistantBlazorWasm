@@ -55,8 +55,13 @@
 
     private List<string> Error = new(3) { String.Empty, String.Empty, String.Empty };
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if(!firstRender)
+        {
+            return;
+        }
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
