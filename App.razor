@@ -1,5 +1,8 @@
 @inject IJSRuntime JSRuntime
 @inject ThemeProvider ThemeProvider
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <CascadingAuthenticationState>
 	<Theme>
@@ -27,6 +30,17 @@
         if (await JSRuntime.InvokeAsync<bool>("isDarkMode"))
         {
             ThemeProvider.UpdateTheme(new DefaultPaletteDark());
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (await LocalStorage.ContainKeyAsync("prevSignIn") && !authState.User.Identity.IsAuthenticated)
+        {
+            await LocalStorage.RemoveItemAsync("prevSignIn");
+            NavigationManager.NavigateTo("/signin");
         }
     }
 }

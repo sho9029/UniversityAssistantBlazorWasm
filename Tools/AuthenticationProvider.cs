@@ -1,4 +1,5 @@
 ﻿using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,16 +16,19 @@ namespace UniversityAssistantBlazorWasm.Tools
         private HttpClient httpClient { get; }
         [Inject]
         private ISessionStorageService sessionStorage { get; }
+        [Inject]
+        private ILocalStorageService localStorage { get; }
 
-        public AuthenticationProvider(HttpClient httpClient, ISessionStorageService sessionStorage)
+        public AuthenticationProvider(HttpClient httpClient, ISessionStorageService sessionStorage, ILocalStorageService localStorage)
         {
             this.httpClient = httpClient;
             this.sessionStorage = sessionStorage;
+            this.localStorage = localStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            // ローカルストレージからトークンを取得
+            // セッションストレージからトークンを取得
             var savedTaken = await sessionStorage.GetItemAsync<string>("authToken");
             var userID = await sessionStorage.GetItemAsync<string>("userID");
 
@@ -43,18 +47,20 @@ namespace UniversityAssistantBlazorWasm.Tools
 
         public async Task MarkUserAsAuthenticated(string userID, string authToken)
         {
-            // ローカルストレージに認証情報を保持
+            // セッションストレージに認証情報を保持
             await sessionStorage.SetItemAsync("userID", userID);
             await sessionStorage.SetItemAsync("authToken", authToken);
+            await localStorage.SetItemAsync("prevSignIn", true);
             // 認証情報の変更通知
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
         public async Task MarkUserAsLoggedOut()
         {
-            // ローカルストレージから認証情報を削除
+            // セッションストレージから認証情報を削除
             await sessionStorage.RemoveItemAsync("userID");
             await sessionStorage.RemoveItemAsync("authToken");
+            await localStorage.RemoveItemAsync("prevSignIn");
             if (httpClient.DefaultRequestHeaders.Authorization != null)
             {
                 httpClient.DefaultRequestHeaders.Authorization = null;
