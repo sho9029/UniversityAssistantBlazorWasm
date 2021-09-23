@@ -42,29 +42,6 @@ namespace UniversityAssistantBlazorWasm.Tools
             }
         }
 
-        public async Task<SignInResult> SignInWithTokenAsync(string token)
-        {
-            try
-            {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-                firebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
-                var res = new SignInResult
-                {
-                    IsSuccessful = true,
-                    IDToken = (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken
-                };
-                return res;
-            }
-            catch (FirebaseAuthException ex)
-            {
-                return new SignInResult()
-                {
-                    IsSuccessful = false,
-                    Error = ex
-                };
-            }
-        }
-
         public async Task<SignInResult> SignUpAsync(SignInModel signInModel)
         {
             try
@@ -94,10 +71,8 @@ namespace UniversityAssistantBlazorWasm.Tools
             await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsLoggedOut();
         }
 
-        public async Task<string> GetFreshTokenAsync(string token)
+        public async Task<string> GetFreshTokenAsync()
         {
-            var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-            firebaseAuthLink = await provider.SignInWithCustomTokenAsync(token);
             return (await firebaseAuthLink.GetFreshAuthAsync()).FirebaseToken;
         }
 
