@@ -8,6 +8,9 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UniversityAssistantBlazorWasm.Tools;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Blazored.SessionStorage.Serialization;
+using Newtonsoft.Json;
 
 namespace UniversityAssistantBlazorWasm
 {
@@ -21,6 +24,7 @@ namespace UniversityAssistantBlazorWasm
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddOptions();
             builder.Services.AddBlazoredSessionStorage();
+            builder.Services.Replace(ServiceDescriptor.Scoped<IJsonSerializer, NewtonSoftJsonSerializer>());
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazorFluentUI();
             builder.Services.AddAuthorizationCore();
@@ -29,5 +33,14 @@ namespace UniversityAssistantBlazorWasm
             builder.Services.AddFirebaseAuth();
             await builder.Build().RunAsync();
         }
+    }
+
+    public class NewtonSoftJsonSerializer : IJsonSerializer
+    {
+        public T Deserialize<T>(string text)
+            => JsonConvert.DeserializeObject<T>(text);
+
+        public string Serialize<T>(T obj)
+            => JsonConvert.SerializeObject(obj);
     }
 }

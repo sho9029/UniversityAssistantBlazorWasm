@@ -60,6 +60,7 @@ namespace UniversityAssistantBlazorWasm.Tools
             // セッションストレージから認証情報を削除
             await sessionStorage.RemoveItemAsync("userID");
             await sessionStorage.RemoveItemAsync("authToken");
+            await sessionStorage.RemoveItemAsync("firebaseAuth");
             await localStorage.RemoveItemAsync("prevSignIn");
             if (httpClient.DefaultRequestHeaders.Authorization != null)
             {

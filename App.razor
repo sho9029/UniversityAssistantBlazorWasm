@@ -2,6 +2,7 @@
 @inject ThemeProvider ThemeProvider
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@inject ISessionStorageService SessionStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <CascadingAuthenticationState>
@@ -37,10 +38,15 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-        if (await LocalStorage.ContainKeyAsync("prevSignIn") && !authState.User.Identity.IsAuthenticated)
+        if (!authState.User.Identity.IsAuthenticated)
         {
-            await LocalStorage.RemoveItemAsync("prevSignIn");
-            NavigationManager.NavigateTo("/signin");
+            await SessionStorage.RemoveItemAsync("firebaseAuth");
+
+            if (await LocalStorage.ContainKeyAsync("prevSignIn"))
+            {
+                await LocalStorage.RemoveItemAsync("prevSignIn");
+                NavigationManager.NavigateTo("/signin");
+            }
         }
     }
 }
