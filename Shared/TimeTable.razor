@@ -6,25 +6,26 @@
     <tbody class="time-table">
         @if (IsFilled)
         {
+            var subjects = StartIndex == -1 ? Enumerable.Repeat("", 5).ToList() : Personal.Subjects.GetRange(StartIndex, 5);
             <tr>
                 <td>1st<br>@Personal.StartTimes[0].ToString("HH:mm")~@Personal.EndTimes[0].ToString("HH:mm")</td>
-                <td>@Personal.Subjects[0]</td>
+                <td>@subjects[0]</td>
             </tr>
             <tr>
                 <td>2nd<br>@Personal.StartTimes[1].ToString("HH:mm")~@Personal.EndTimes[1].ToString("HH:mm")</td>
-                <td>@Personal.Subjects[1]</td>
+                <td>@subjects[1]</td>
             </tr>
             <tr>
                 <td>3rd<br>@Personal.StartTimes[2].ToString("HH:mm")~@Personal.EndTimes[2].ToString("HH:mm")</td>
-                <td>@Personal.Subjects[2]</td>
+                <td>@subjects[2]</td>
             </tr>
             <tr>
                 <td>4th<br>@Personal.StartTimes[3].ToString("HH:mm")~@Personal.EndTimes[3].ToString("HH:mm")</td>
-                <td>@Personal.Subjects[3]</td>
+                <td>@subjects[3]</td>
             </tr>
             <tr>
                 <td>5th<br>@Personal.StartTimes[4].ToString("HH:mm")~@Personal.EndTimes[4].ToString("HH:mm")</td>
-                <td>@Personal.Subjects[4]</td>
+                <td>@subjects[4]</td>
             </tr>
         }
         else
@@ -38,6 +39,14 @@
     private DatabaseProvider database;
     private bool IsFilled = false;
     private Personal Personal;
+    private int StartIndex
+    {
+        get
+        {
+            var dayOfWeek = (int)DateTime.Now.DayOfWeek - 1;
+            return dayOfWeek == -1 ? -1 : dayOfWeek * 5;
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -103,10 +112,7 @@
         {
             var personal = new Personal
             {
-                Subjects = new List<string>(5)
-                {
-	                "subject1", "subject2", "subject3", "subject4", "subject5"
-                },
+                Subjects = Enumerable.Repeat("", 30).ToList(),
                 StartTimes = new List<DateTime>(5)
                 {
                     new DateTime(1, 1, 1, 9, 30, 0),
