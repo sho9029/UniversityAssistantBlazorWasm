@@ -1,16 +1,17 @@
 using Append.Blazor.Notifications;
-using Blazored.SessionStorage;
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
+using Blazored.SessionStorage.Serialization;
 using BlazorFluentUI;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UniversityAssistantBlazorWasm.Tools;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Blazored.SessionStorage.Serialization;
-using Newtonsoft.Json;
 
 namespace UniversityAssistantBlazorWasm
 {
@@ -21,6 +22,7 @@ namespace UniversityAssistantBlazorWasm
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            builder.Logging.SetMinimumLevel(LogLevel.Warning);
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddOptions();
             builder.Services.AddBlazoredSessionStorage();
