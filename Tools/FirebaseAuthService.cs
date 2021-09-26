@@ -17,6 +17,8 @@ namespace UniversityAssistantBlazorWasm.Tools
         [Inject]
         private AuthenticationStateProvider authenticationStateProvider { get; }
 
+        private FirebaseAuthProvider provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
+
         public FirebaseAuthService(ISessionStorageService sessionStorage, AuthenticationStateProvider authenticationStateProvider)
         {
             this.sessionStorage = sessionStorage;
@@ -37,7 +39,6 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 await SetFirebaseAuthLinkAsync(await provider.SignInWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password));
                 var res = new SignInResult()
                 {
@@ -61,7 +62,6 @@ namespace UniversityAssistantBlazorWasm.Tools
         {
             try
             {
-                var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
                 await SetFirebaseAuthLinkAsync(await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password));
                 var res = new SignInResult()
                 {
@@ -91,11 +91,16 @@ namespace UniversityAssistantBlazorWasm.Tools
             return (await (await GetFirebaseAuthLinkAsync()).GetFreshAuthAsync()).FirebaseToken;
         }
 
-        public async Task<string> GetUidAsync(string token)
+        public async Task<string> GetUidAsync()
         {
-            var provider = new FirebaseAuthProvider(new FirebaseConfig(Confidential.Firebase.ApiKey));
-            var user = await provider.GetUserAsync(token);
+            var user = await provider.GetUserAsync(await GetFreshTokenAsync());
             return user.LocalId;
+        }
+
+        public async Task<string> GetDisplayNameAsync()
+        {
+            var user = await provider.GetUserAsync(await GetFreshTokenAsync());
+            return user.DisplayName;
         }
     }
 

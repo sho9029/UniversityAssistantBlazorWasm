@@ -12,7 +12,7 @@
         <li class="nav-item px-3">
             <AuthorizeView>
                 <Authorized>
-                    <p class="user">@context.User.Identity.Name</p>
+                    <DisplayName />
 	    	    </Authorized>
                 <NotAuthorized>
                     <p class="user">Guest user</p>
@@ -64,7 +64,7 @@
 @code {
     private bool collapseNavMenu = true;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    
+
 
     private void ToggleNavMenu()
     {

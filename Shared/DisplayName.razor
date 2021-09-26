@@ -1,0 +1,19 @@
+﻿@inject AuthenticationStateProvider AuthenticationState
+@inject IAuthService Auth
+
+<p class="user">@_displayName</p>
+
+@code {
+    private string _displayName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+	{
+        var state = await AuthenticationState.GetAuthenticationStateAsync();
+        if (!state.User.Identity.IsAuthenticated)
+        {
+            return;
+        }
+
+        _displayName = await Auth.GetDisplayNameAsync();
+	}
+}
