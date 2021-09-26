@@ -33,7 +33,7 @@ namespace UniversityAssistantBlazorWasm.Tools
             var userID = await sessionStorage.GetItemAsync<string>("userID");
 
             // トークンが存在しない場合
-            if (string.IsNullOrWhiteSpace(savedTaken))
+            if (string.IsNullOrWhiteSpace(savedTaken) || string.IsNullOrWhiteSpace(userID))
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
