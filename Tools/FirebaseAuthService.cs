@@ -63,12 +63,14 @@ namespace UniversityAssistantBlazorWasm.Tools
             try
             {
                 await SetFirebaseAuthLinkAsync(await provider.CreateUserWithEmailAndPasswordAsync(signInModel.Email, signInModel.Password));
+                var token = (await (await GetFirebaseAuthLinkAsync()).GetFreshAuthAsync()).FirebaseToken;
                 var res = new SignInResult()
                 {
                     IsSuccessful = true,
-                    IDToken = (await (await GetFirebaseAuthLinkAsync()).GetFreshAuthAsync()).FirebaseToken
+                    IDToken = token
                 };
                 await ((AuthenticationProvider)authenticationStateProvider).MarkUserAsAuthenticated(signInModel.Email, res.IDToken);
+                await provider.UpdateProfileAsync(token, signInModel.DisplayName, null);
                 return res;
             }
             catch (FirebaseAuthException ex)

@@ -4,27 +4,34 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Sign up</h3>
-<TextField class="text-field" Label="Email" @bind-Value=@Email AutoComplete="AutoComplete.Email" OnKeyDown=@((e) => OnKeyDownAsync(e))/>
-<TextField class="text-field" Label="Password (8~128文字で、半角英小文字, 大文字, 数字をそれぞれ1文字以上)" @bind-Value=@Password InputType="InputType.Password" OnKeyDown=@((e) => OnKeyDownAsync(e))/>
+<TextField class="text-field" Label="Email" @bind-Value=@Email AutoComplete=@AutoComplete.Email OnKeyDown=@((e) => OnKeyDownAsync(e))/>
+<TextField class="text-field" Label="Display name" @bind-Value=@DisplayName AutoComplete=@AutoComplete.Name OnKeyDown=@((e) => OnKeyDownAsync(e))/>
+<TextField class="text-field" Label="Password (8~128文字で、半角英小文字, 大文字, 数字をそれぞれ1文字以上)" @bind-Value=@Password InputType=@InputType.Password OnKeyDown=@((e) => OnKeyDownAsync(e))/>
 <br />
 <DefaultButton Text="Sign up" OnClick=@(() => SubmitAsync()) Disabled="@Disabled" />
 <p>or <Link Href="signin">sign in</Link></p>
-@if (!String.IsNullOrEmpty(Error[0]))
+@if (!string.IsNullOrEmpty(Error[0]))
 {
     <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(0))>
         @Error[0]
 	</MessageBar>
 }
-@if (!String.IsNullOrEmpty(Error[1]))
+@if (!string.IsNullOrEmpty(Error[1]))
 {
     <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(1))>
         @Error[1]
 	</MessageBar>
 }
-@if (!String.IsNullOrEmpty(Error[2]))
+@if (!string.IsNullOrEmpty(Error[2]))
 {
     <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(2))>
         @Error[2]
+	</MessageBar>
+}
+@if (!string.IsNullOrEmpty(Error[3]))
+{
+    <MessageBar MessageBarType="MessageBarType.Error" OnDismiss=@(() => OnDismiss(3))>
+        @Error[3]
 	</MessageBar>
 }
 
@@ -41,6 +48,21 @@
         {
             _email = value;
             isAvailableEmail = IsEmail(value);
+        }
+    }
+
+    private bool isAvailableDisplayName = false;
+    private string _displayName;
+    private string DisplayName
+    {
+        get
+        {
+            return _displayName;
+        }
+        set
+        {
+            _displayName = value;
+            isAvailableDisplayName = IsDisplayName(value);
         }
     }
 
@@ -64,7 +86,7 @@
     {
         get
         {
-            return String.IsNullOrEmpty(Email) || String.IsNullOrEmpty(Password) ? true : _disabled;
+            return string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(DisplayName) || string.IsNullOrWhiteSpace(Password) ? true : _disabled;
         }
         set
         {
@@ -74,7 +96,7 @@
 
     private readonly Regex emailPattern = new ("^[-+.\\w]+@[a-z0-9]+(\\.[a-z0-9]+)*\\.[a-z]{2,6}$", RegexOptions.Compiled | RegexOptions.IgnoreCase),
         passwordPattern = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])[!-~]{8,128}$", RegexOptions.Compiled);
-    private List<string> Error = new(3) { String.Empty, String.Empty, String.Empty };
+    private List<string> Error = new(4) { string.Empty, string.Empty, string.Empty, string.Empty };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -95,6 +117,11 @@
         return emailPattern.IsMatch(email);
     }
 
+    private bool IsDisplayName(string displayName)
+    {
+        return !string.IsNullOrWhiteSpace(displayName);
+    }
+
     private bool IsPassword(string password)
     {
         return passwordPattern.IsMatch(password);
@@ -110,28 +137,32 @@
 
     private async Task SubmitAsync()
     {
-        Error = new(3) { String.Empty, String.Empty, String.Empty };
-        if (!isAvailableEmail || !isAvailablePassword)
+        Error = new(4) { string.Empty, string.Empty, string.Empty, string.Empty };
+        if (!isAvailableEmail || !isAvailableDisplayName || !isAvailablePassword)
         {
             if (!isAvailableEmail)
             {
                 Error[0] = "使用できないメールアドレスです。";
             }
+            if (!isAvailableDisplayName)
+            {
+                Error[1] = "表示名は空白にできません。";
+            }
             if (!isAvailablePassword)
             {
-                Error[1] = "パスワードは8~128文字で、半角英小文字, 大文字, 数字をそれぞれ1文字以上含む文字列にしてください。";
+                Error[2] = "パスワードは8~128文字で、半角英小文字, 大文字, 数字をそれぞれ1文字以上含む文字列にしてください。";
             }
             return;
         }
         Disabled = true;
-        var result = await Auth.SignUpAsync(new SignInModel() { Email = Email, Password = Password });
+        var result = await Auth.SignUpAsync(new SignInModel() { Email = Email, DisplayName = DisplayName, Password = Password });
         if (result.IsSuccessful)
         {
             NavigationManager.NavigateTo("/");
         }
         else
         {
-            Error[2] = $"Firebase 認証エラー: {result.ErrorReason}";
+            Error[3] = $"Firebase 認証エラー: {result.ErrorReason}";
         }
         Disabled = false;
     }
