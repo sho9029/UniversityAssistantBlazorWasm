@@ -1,8 +1,82 @@
 ﻿@page "/settings"
+@inject IAuthService Auth
+@inject IJSRuntime JSRuntime
 
 <h3>Settings</h3>
-Under construction
+@if (!string.IsNullOrEmpty(Error[0]))
+{
+	<MessageBar MessageBarType=@MessageBarType.Error OnDismiss=@(() => OnDismiss(0))>
+		@Error[0];
+	</MessageBar>
+}
+
+<AuthorizeView>
+	<Authorized>
+		<div class="settings-table">
+			<h5>User</h5>
+			<div class="settings-element">
+				<TextField Label="DisplayName" @bind-Value=@DisplayName AutoComplete=@AutoComplete.Off/>
+				<div class="settings-btn">
+					<DefaultButton Text="Submit" OnClick=@(() => SubmitDisplayNameAsync()) Disabled=@Disabled/>
+				</div>
+			</div>
+		</div>
+	</Authorized>
+</AuthorizeView>
 
 @code {
+	private bool disabled = false;
+	private bool Disabled
+	{
+		get
+		{
+			return string.IsNullOrWhiteSpace(DisplayName) ? true : disabled;
+		}
+		set
+		{
+			disabled = value;
+		}
+	}
 
+	private bool isAvailableDisplayName = false;
+	private string displayName;
+	private string DisplayName
+	{
+		get
+		{
+			return displayName;
+		}
+		set
+		{
+			displayName = value;
+			isAvailableDisplayName = IsDisplayName(value);
+		}
+	}
+
+	private List<string> Error = new(1) { string.Empty };
+
+	private bool IsDisplayName(string displayName)
+	{
+		return !string.IsNullOrWhiteSpace(displayName);
+	}
+
+	private async Task SubmitDisplayNameAsync()
+	{
+		Error[0] = string.Empty;
+
+		if(!isAvailableDisplayName)
+		{
+			Error[0] = "表示名は空白にできません。";
+			return;
+		}
+
+		await Auth.UpdateProfileAsync(DisplayName, null);
+		DisplayName = string.Empty;
+		await JSRuntime.InvokeVoidAsync("reload");
+	}
+
+	private void OnDismiss(int index)
+	{
+		Error[index] = string.Empty;
+	}
 }

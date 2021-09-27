@@ -11,6 +11,7 @@ namespace UniversityAssistantBlazorWasm.Models
         Task<string> GetFreshTokenAsync();
         Task<string> GetUidAsync();
         Task<string> GetDisplayNameAsync();
+        Task UpdateProfileAsync(string displayName, string photoUrl);
     }
 
     public class SignInModel

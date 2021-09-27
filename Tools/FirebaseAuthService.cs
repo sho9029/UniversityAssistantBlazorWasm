@@ -104,6 +104,11 @@ namespace UniversityAssistantBlazorWasm.Tools
             var user = await provider.GetUserAsync(await GetFreshTokenAsync());
             return user.DisplayName;
         }
+
+        public async Task UpdateProfileAsync(string displayName, string photoUrl)
+		{
+            await provider.UpdateProfileAsync(await GetFreshTokenAsync(), displayName, photoUrl);
+		}
     }
 
     public static class AuthExtension
