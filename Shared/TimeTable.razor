@@ -59,7 +59,7 @@
             {
                 AuthTokenAsyncFactory = async () =>
                 {
-                    var token = await Auth.GetFreshTokenAsync();
+                    var token = await Auth.GetFirebaseTokenAsync();
                     await SessionStorage.SetItemAsync("authToken", token);
                     return token;
                 }
