@@ -36,20 +36,24 @@
 	</ul>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="settings">
-                <span class="oi oi-cog" aria-hidden="true"></span> Settings
-            </NavLink>
-		</li>
-    </ul>
-</div>
+<AuthorizeView>
+    <Authorized>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="settings">
+                        <span class="oi oi-cog" aria-hidden="true"></span> Settings
+                    </NavLink>
+        		</li>
+            </ul>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 <br>
 <div class="@NavMenuCssClass nav-item px-3 flex-column">
