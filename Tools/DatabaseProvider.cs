@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace UniversityAssistantBlazorWasm.Tools
 {
-    public class DatabaseProvider
+    public static class DatabaseProvider
     {
-        private FirebaseClient firebaseClient { get; set; }
-        private readonly string querySeparator = @"/\";
+        private static FirebaseClient firebaseClient { get; set; }
+        private static readonly string querySeparator = @"/\";
 
-        public DatabaseProvider(string url, FirebaseOptions options)
+        public static void Initialize(string url, FirebaseOptions options)
         {
             firebaseClient = new FirebaseClient(url, options);
         }
 
-        private ChildQuery GetChildQuery(string query)
+        private static ChildQuery GetChildQuery(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -48,7 +48,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         /// <typeparam name="T">保存したデータの型</typeparam>
         /// <param name="query">クエリ</param>
         /// <returns>取得したデータ</returns>
-        public async Task<T[]> GetAsync<T>(string query)
+        public static async Task<T[]> GetAsync<T>(string query)
         {
             var child = GetChildQuery(query);
             var result = await child.OnceAsync<T>();
@@ -62,7 +62,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         /// <typeparam name="T">保存するデータの型</typeparam>
         /// <param name="query">クエリ</param>
         /// <param name="data">保存するデータ</param>
-        public async Task PostAsync<T>(string query, T data)
+        public static async Task PostAsync<T>(string query, T data)
         {
             var child = GetChildQuery(query);
             await child.PostAsync(data);
@@ -75,7 +75,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         /// <typeparam name="T">保存するデータの型</typeparam>
         /// <param name="query">クエリ</param>
         /// <param name="data">保存するデータ</param>
-        public async Task PutAsync<T>(string query, T data)
+        public static async Task PutAsync<T>(string query, T data)
         {
             var child = GetChildQuery(query);
             await child.PutAsync(data);
@@ -85,7 +85,7 @@ namespace UniversityAssistantBlazorWasm.Tools
         /// データベースからデータを削除
         /// </summary>
         /// <param name="query">クエリ</param>
-        public async Task DeleteAsync(string query)
+        public static async Task DeleteAsync(string query)
         {
             var child = GetChildQuery(query);
             await child.DeleteAsync();

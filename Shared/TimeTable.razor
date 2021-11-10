@@ -36,7 +36,6 @@
 </table>
 
 @code {
-    private DatabaseProvider database;
     private bool IsFilled = false;
     private Personal Personal;
     private int StartIndex
@@ -54,7 +53,7 @@
         {
             return;
         }
-        database = new(Confidential.Firebase.DatabaseUrl,
+        DatabaseProvider.Initialize(Confidential.Firebase.DatabaseUrl,
             new FirebaseOptions
             {
                 AuthTokenAsyncFactory = async () =>
@@ -73,7 +72,7 @@
         try
         {
             var uid = await Auth.GetUidAsync();
-            var data = (await database.GetAsync<Personal>($"users/{uid}"))[0];
+            var data = (await DatabaseProvider.GetAsync<Personal>($"users/{uid}"))[0];
             Personal = new Personal
             {
                 StartTimes = data.StartTimes,
@@ -137,7 +136,7 @@
                 }
             };
             var uid = await Auth.GetUidAsync();
-            await database.PutAsync($"users/{uid}/personal", personal);
+            await DatabaseProvider.PutAsync($"users/{uid}/personal", personal);
         }
         catch (FirebaseException ex)
         {
