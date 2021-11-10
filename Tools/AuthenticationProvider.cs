@@ -50,7 +50,6 @@ namespace UniversityAssistantBlazorWasm.Tools
             // セッションストレージに認証情報を保持
             await sessionStorage.SetItemAsync("userID", userID);
             await sessionStorage.SetItemAsync("authToken", authToken);
-            await localStorage.SetItemAsync("prevSignIn", true);
             // 認証情報の変更通知
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
@@ -61,7 +60,6 @@ namespace UniversityAssistantBlazorWasm.Tools
             await sessionStorage.RemoveItemAsync("userID");
             await sessionStorage.RemoveItemAsync("authToken");
             await sessionStorage.RemoveItemAsync("firebaseAuth");
-            await localStorage.RemoveItemAsync("prevSignIn");
             if (httpClient.DefaultRequestHeaders.Authorization != null)
             {
                 httpClient.DefaultRequestHeaders.Authorization = null;

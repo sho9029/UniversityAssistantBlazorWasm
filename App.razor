@@ -41,12 +41,6 @@
         if (!authState.User.Identity.IsAuthenticated)
         {
             await SessionStorage.RemoveItemAsync("firebaseAuth");
-
-            if (await LocalStorage.ContainKeyAsync("prevSignIn"))
-            {
-                await LocalStorage.RemoveItemAsync("prevSignIn");
-                NavigationManager.NavigateTo("/signin");
-            }
         }
     }
 }
