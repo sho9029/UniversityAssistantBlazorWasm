@@ -53,96 +53,19 @@
         {
             return;
         }
-        DatabaseProvider.Initialize(Confidential.Firebase.DatabaseUrl,
-            new FirebaseOptions
-            {
-                AuthTokenAsyncFactory = async () =>
-                {
-                    var token = await Auth.GetFirebaseTokenAsync();
-                    await SessionStorage.SetItemAsync("authToken", token);
-                    return token;
-                }
-            });
+
         await GetPersonalDataAsync();
         await InvokeAsync(new Action(() => StateHasChanged()));
     }
 
     private async Task GetPersonalDataAsync()
     {
-        try
-        {
-            var uid = await Auth.GetUidAsync();
-            var data = (await DatabaseProvider.GetAsync<Personal>($"users/{uid}"))[0];
-            Personal = new Personal
-            {
-                StartTimes = data.StartTimes,
-                EndTimes = data.EndTimes,
-                Subjects = data.Subjects
-            };
-            IsFilled = true;
-        }
-        catch (FirebaseException ex)
-        {
-            // トークンの期限切れ
-            if (ex.ResponseData.Contains("expired"))
-            {
-                await NavigateToSignInAsync("token error");
-            }
-            else
-            {
-                Console.Error.WriteLine($"FirebaseException\n{ex.Message}");
-            }
-        }
-        catch (FirebaseAuthException)
-        {
-            await NavigateToSignInAsync("invalid token");
-        }
-        catch (IndexOutOfRangeException)
-        {
-            // データが保存されていない時
-            await InitializeDatabaseAsync();
-        }
+        
     }
 
     private async Task NavigateToSignInAsync(string reason)
     {
         await Auth.SignOutAsync();
         NavigationManager.NavigateTo($"/signin/{reason}");
-    }
-
-    private async Task InitializeDatabaseAsync()
-    {
-        try
-        {
-            var personal = new Personal
-            {
-                Subjects = Enumerable.Repeat("", 30).ToList(),
-                StartTimes = new List<DateTime>(5)
-                {
-                    new DateTime(1, 1, 1, 9, 30, 0),
-                    new DateTime(1, 1, 1, 11, 10, 0),
-                    new DateTime(1, 1, 1, 13, 30, 0),
-                    new DateTime(1, 1, 1, 15, 10, 0),
-                    new DateTime(1, 1, 1, 16, 50, 0)
-                },
-
-                EndTimes = new List<DateTime>(5)
-                {
-                    new DateTime(1, 1, 1, 11, 0, 0),
-                    new DateTime(1, 1, 1, 12, 40, 0),
-                    new DateTime(1, 1, 1, 15, 0, 0),
-                    new DateTime(1, 1, 1, 16, 40, 0),
-                    new DateTime(1, 1, 1, 18, 20, 0)
-                }
-            };
-            var uid = await Auth.GetUidAsync();
-            await DatabaseProvider.PutAsync($"users/{uid}/personal", personal);
-        }
-        catch (FirebaseException ex)
-        {
-            Console.Error.WriteLine(ex.Message);
-        }
-
-        await GetPersonalDataAsync();
     }
 }

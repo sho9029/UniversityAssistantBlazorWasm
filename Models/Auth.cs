@@ -8,10 +8,8 @@ namespace UniversityAssistantBlazorWasm.Models
         Task<SignInResult> SignInAsync(SignInModel signInModel);
         Task<SignInResult> SignUpAsync(SignInModel signInModel);
         Task SignOutAsync();
-        Task<string> GetFirebaseTokenAsync();
         Task<string> GetUidAsync();
         Task<string> GetDisplayNameAsync();
-        Task UpdateProfileAsync(string displayName, string photoUrl);
     }
 
     public class SignInModel
