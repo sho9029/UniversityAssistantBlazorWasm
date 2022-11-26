@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using System.Timers;
 using UniversityAssistantBlazorWasm.Models;
-using UniversityAssistantBlazorWasm.Properties;
 
 namespace UniversityAssistantBlazorWasm.Tools
 {
